@@ -13,9 +13,10 @@ final class PostTableViewCell: UITableViewCell {
 
     @IBOutlet weak private var profileImageView: UIImageView!
     @IBOutlet weak private var accountNameLabel: UILabel!
+    @IBOutlet weak private var verifiedCheckmark: UIImageView!
     @IBOutlet weak private var fullNameLabel: UILabel!
     @IBOutlet weak private var networkImageView: UIImageView!
-    @IBOutlet weak private var postTextLabel: UILabel!
+    @IBOutlet weak private var postTextView: UITextView!
     @IBOutlet weak private var postImageView: UIImageView!
     @IBOutlet weak private var postDateLabel: UILabel!
     
@@ -25,22 +26,19 @@ final class PostTableViewCell: UITableViewCell {
     }
     
     func configure(_ post: Post) {
-        guard let pictureLink = post.author?.pictureLink,
-            let accountName = post.author?.account,
-            let authorName = post.author?.name, let network = post.network else {
-            return
-        }
-        profileImageView.downloaded(from: pictureLink)
-        accountNameLabel.text = accountName
-        fullNameLabel.text = authorName
-        configure(network)
+        profileImageView.downloaded(from: post.author?.pictureLink ?? "placeholder")
+        accountNameLabel.text = post.author?.account ?? "Missing account"
+        verifiedCheckmark.isHidden = !(post.author?.isVerified ?? false)
+        fullNameLabel.text = post.author?.name ?? "No author name"
+        configure(post.network ?? .unknown)
         configureTextLabel(with: post.text)
         configure(post.attachment)
-        if #available(iOS 11.0, *) {
-            postDateLabel.text = post.date?.iso8601?.description(with: .current)
-        } else {
-            postDateLabel.text = post.date
+        guard let dateString = post.date,
+            let date = DateFormatter.getFormatter(.iso8601).date(from: dateString) else {
+                postDateLabel.text = ""
+            return
         }
+        postDateLabel.text = DateFormatter.getFormatter(.postFormat).string(from: date)
     }
     
     private func configure(_ network: NetworkType) {
@@ -48,11 +46,16 @@ final class PostTableViewCell: UITableViewCell {
     }
     
     private func configureTextLabel(with text: Text?) {
-        guard let text = text else {
+        guard let text = text, let textString = text.plain else {
             return
         }
-        
-        postTextLabel.text = text.plain
+        let attributedString = NSMutableAttributedString(string: textString)
+        text.markup?.forEach({ markup in
+            if let location = markup.location, let lenght = markup.length, let link = markup.link {
+                attributedString.addAttribute(.link, value: link, range: NSRange(location: location, length: lenght))
+            }
+        })
+        postTextView.attributedText = attributedString
         
     }
     
@@ -64,7 +67,7 @@ final class PostTableViewCell: UITableViewCell {
                 postImageView.heightAnchor.constraint(equalToConstant: 0).isActive = true
                 return
         }
-        
+        postImageView.isHidden = false
         postImageView.downloaded(from: attachment.pictureLink ?? "placeholder")
         postImageView.widthAnchor.constraint(equalToConstant: CGFloat(width)).isActive = true
         postImageView.heightAnchor.constraint(equalToConstant: CGFloat(height)).isActive = true
