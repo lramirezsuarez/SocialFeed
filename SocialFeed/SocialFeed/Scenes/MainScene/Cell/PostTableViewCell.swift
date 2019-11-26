@@ -19,6 +19,7 @@ final class PostTableViewCell: UITableViewCell {
     @IBOutlet weak private var postTextView: UITextView!
     @IBOutlet weak private var postImageView: UIImageView!
     @IBOutlet weak private var postDateLabel: UILabel!
+    @IBOutlet weak private var postImageHeightConstraint: NSLayoutConstraint!
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -64,13 +65,17 @@ final class PostTableViewCell: UITableViewCell {
             let width = attachment.width,
             let height = attachment.height else {
                 postImageView.isHidden = true
-                postImageView.heightAnchor.constraint(equalToConstant: 0).isActive = true
+                postImageHeightConstraint.constant = 0
                 return
         }
+        let ratio = Double(width / height)
+        let newHeight = postImageView.frame.width / CGFloat(ratio > 0 ? ratio : 1.5)
+        postImageHeightConstraint.constant = newHeight > 200 ? 200 : newHeight
+        
         postImageView.isHidden = false
         postImageView.downloaded(from: attachment.pictureLink ?? "placeholder")
-        postImageView.widthAnchor.constraint(equalToConstant: CGFloat(width)).isActive = true
-        postImageView.heightAnchor.constraint(equalToConstant: CGFloat(height)).isActive = true
+        postImageView.layoutIfNeeded()
+        
     }
     
 }

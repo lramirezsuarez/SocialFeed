@@ -27,6 +27,8 @@ class SocialFeedViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         socialFeedTableView.refreshControl = refreshControl
+        socialFeedTableView.rowHeight = UITableView.automaticDimension
+        socialFeedTableView.estimatedRowHeight = 400
         loadData()
     }
 
