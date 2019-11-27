@@ -117,7 +117,7 @@
                                                             </attributedString>
                                                             <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                                                         </textView>
-                                                        <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="751" image="placeholder" translatesAutoresizingMaskIntoConstraints="NO" id="3bO-2l-SvW">
+                                                        <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="751" translatesAutoresizingMaskIntoConstraints="NO" id="3bO-2l-SvW">
                                                             <rect key="frame" x="20" y="170.5" width="374" height="200"/>
                                                             <constraints>
                                                                 <constraint firstAttribute="height" constant="200" id="jXm-ec-pM1"/>
@@ -198,6 +198,5 @@
     </scenes>
     <resources>
         <image name="checkmark" width="32" height="32"/>
-        <image name="placeholder" width="320" height="240"/>
     </resources>
 </document>

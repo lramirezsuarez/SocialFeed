@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Kingfisher
 
 final class PostTableViewCell: UITableViewCell {
     static let cellIdentifier = String(describing: PostTableViewCell.self)
@@ -27,7 +28,8 @@ final class PostTableViewCell: UITableViewCell {
     }
     
     func configure(_ post: Post) {
-        profileImageView.downloaded(from: post.author?.pictureLink ?? "placeholder")
+        profileImageView.kf.indicatorType = .activity
+        profileImageView.kf.setImage(with: URL(string: post.author?.pictureLink ?? ""))
         accountNameLabel.text = post.author?.account ?? "Missing account"
         verifiedCheckmark.isHidden = !(post.author?.isVerified ?? false)
         fullNameLabel.text = post.author?.name ?? "No author name"
@@ -63,7 +65,9 @@ final class PostTableViewCell: UITableViewCell {
     private func configure(_ attachment: Attachment?) {
         guard let attachment = attachment,
             let width = attachment.width,
-            let height = attachment.height else {
+            let height = attachment.height,
+            let link = attachment.pictureLink,
+            let url = URL(string: link) else {
                 postImageView.isHidden = true
                 postImageHeightConstraint.constant = 0
                 return
@@ -73,7 +77,8 @@ final class PostTableViewCell: UITableViewCell {
         postImageHeightConstraint.constant = newHeight > 200 ? 200 : newHeight
         
         postImageView.isHidden = false
-        postImageView.downloaded(from: attachment.pictureLink ?? "placeholder")
+        postImageView.kf.indicatorType = .activity
+        postImageView.kf.setImage(with: url)
         postImageView.layoutIfNeeded()
         
     }
