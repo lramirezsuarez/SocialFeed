@@ -53,7 +53,8 @@ extension SocialFeedViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: PostTableViewCell.cellIdentifier) as? PostTableViewCell else {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: PostTableViewCell.cellIdentifier) as? PostTableViewCell,
+            posts.count >= indexPath.row else {
             return PostTableViewCell()
         }
         let post = posts[indexPath.row]
